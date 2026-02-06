@@ -2,44 +2,44 @@
 a = 200
 b = 33
 if b > a:
-  print("b is greater than a")
+    print("b is greater than a")
 elif a == b:
-  print("a and b are equal")
+    print("a and b are equal")
 else:
-  print("a is greater than b")
+    print("a is greater than b")
 
 #example-2
 a = 200
 b = 33
 if b > a:
-  print("b is greater than a")
+    print("b is greater than a")
 else:
-  print("b is not greater than a")
+    print("b is not greater than a")
 
 #example-3
 number = 7
 
 if number % 2 == 0:
-  print("The number is even")
+    print("The number is even")
 else:
-  print("The number is odd")
+    print("The number is odd")
 
 #example-4
 temperature = 22
 
 if temperature > 30:
-  print("It's hot outside!")
+    print("It's hot outside!")
 elif temperature > 20:
-  print("It's warm outside")
+    print("It's warm outside")
 elif temperature > 10:
-  print("It's cool outside")
+    print("It's cool outside")
 else:
-  print("It's cold outside!")
+    print("It's cold outside!")
 
 #example-5
 username = "Emil"
 
 if len(username) > 0:
-  print(f"Welcome, {username}!")
+    print(f"Welcome, {username}!")
 else:
-  print("Error: Username cannot be empty")
+    print("Error: Username cannot be empty")
