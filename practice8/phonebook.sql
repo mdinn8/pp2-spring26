@@ -70,4 +70,16 @@ END;
 $$;
 
 CALL upsert_contact('Madina', '87767321438');
+CALL upsert_contact('Mad885', '87765321438');
+CALL upsert_contact('Ma', '879561438');
+CALL upsert_contact('Mdin', '821438');
+--pagination
+SELECT get_contacts_paginated(1, 2);
+--search by patterns
+SELECT get_contacts_by_patterns('776732');
+--insert with array
+CALL insert_new_users(ARRAY['fghj', 'ghjk', 'ghjkjk'], ARRAY['74185','85296','8525']);
+SELECT * FROM phonebook;
+-- deleting
+CALL deleting_contacts(p_name := 'Ma');
 SELECT * FROM phonebook;
