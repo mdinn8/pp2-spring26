@@ -46,7 +46,8 @@ while not done:
     s = now.second
 
     
-    hours_angle   = (h / 12) * 360 + (m / 60) * 30    
+    #hours_angle   = (h / 12) * 360 + (m / 60) * 30   
+    seconds = (s/60) * 360
     minutes_angle = (m / 60) * 360 + (s / 60) * 6     
 
     screen.fill(WHITE)
@@ -57,8 +58,8 @@ while not done:
     mic_rect = res_mickey.get_rect(center=MICKEY_CENTER)
     screen.blit(res_mickey, mic_rect)
 
-    draw_hand(screen, hand_r_base, hours_angle,   CLOCK_CENTER, length_ratio=0.45)  
-    draw_hand(screen, hand_l_base, minutes_angle, CLOCK_CENTER, length_ratio=0.50)  
+    draw_hand(screen, hand_r_base,minutes_angle ,   CLOCK_CENTER, length_ratio=0.45)  
+    draw_hand(screen, hand_l_base, seconds, CLOCK_CENTER, length_ratio=0.50)  
 
     pygame.display.flip()
     clock.tick(60)

@@ -3,7 +3,7 @@ import pygame
 pygame.init()
 screen = pygame.display.set_mode((600, 400))
 pygame.display.set_caption("Ball Game")
-
+pygame.key.set_repeat(100, 50)
 done = False
 clock = pygame.time.Clock()
 
