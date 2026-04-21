@@ -17,71 +17,109 @@ BLUE = (0,0,255)
 screen.fill(WHITE)
 
 color = BLACK
-radius = 10
+radius = 5
 drawing = False
-mode = "circle"   
-
+mode = "paint"
 fill = False
 
-start_pos = None  
+start_pos = None
+last_pos = None
 
 running = True
 while running:
     for event in pygame.event.get():
+        
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 color = RED
-            if event.key == pygame.K_g:
+            elif event.key == pygame.K_g:
                 color = GREEN
-            if event.key == pygame.K_b:
+            elif event.key == pygame.K_b:
                 color = BLUE
-            if event.key == pygame.K_k:
+            elif event.key == pygame.K_k:
                 color = BLACK
 
-            if event.key == pygame.K_e:
+            elif event.key == pygame.K_e:
                 mode = "erase"
-            if event.key == pygame.K_c:
+            elif event.key == pygame.K_c:
                 mode = "circle"
-            if event.key == pygame.K_q:
+            elif event.key == pygame.K_p:
+                mode = "paint"
+            elif event.key == pygame.K_q:
                 mode = "rect"
-            if event.key == pygame.K_f:
-                fill = True
-            if event.key == pygame.K_KP_MINUS:
-                radius -=1
-            if event.key == pygame.K_KP_PLUS:
-                radius +=1   
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.key == pygame.K_f:
+                fill = not fill
+
+            elif event.key == pygame.K_EQUALS or event.key == pygame.K_KP_PLUS:
+                radius += 1
+            elif event.key == pygame.K_MINUS or event.key == pygame.K_KP_MINUS:
+                radius -= 1
+
+            elif event.key == pygame.K_x:
+                screen.fill(WHITE)
+
+            radius = max(1, radius)
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             drawing = True
-            start_pos = pygame.mouse.get_pos()
+            start_pos = event.pos
+            last_pos = event.pos
             canvas_copy = screen.copy()
 
-        if event.type == pygame.MOUSEBUTTONUP:
+        elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
 
             if mode == "rect":
-                end_pos = pygame.mouse.get_pos()
-                screen.blit(canvas_copy,(0,0))
                 x1, y1 = start_pos
-                x2, y2 = end_pos
+                x2, y2 = event.pos
 
                 rect = pygame.Rect(min(x1,x2), min(y1,y2),
                                    abs(x2-x1), abs(y2-y1))
-                pygame.draw.rect(screen, color, rect, 2)
 
-                
+                width = 0 if fill else 2
+                pygame.draw.rect(screen, color, rect, width)
 
-        if event.type == pygame.MOUSEMOTION and drawing:
-            x, y = pygame.mouse.get_pos()
+            elif mode == "circle":
+                x1, y1 = start_pos
+                x2, y2 = event.pos
 
-            if mode == "circle":
-                pygame.draw.circle(screen, color, (x, y), radius)
+                r = int(((x2-x1)**2 + (y2-y1)**2)**0.5)
+                width = 0 if fill else 2
+                pygame.draw.circle(screen, color, start_pos, r, width)
+
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            x, y = event.pos
+
+            if mode == "paint":
+                pygame.draw.line(screen, color, last_pos, (x, y), radius)
+                last_pos = (x, y)
 
             elif mode == "erase":
                 pygame.draw.circle(screen, WHITE, (x, y), radius)
+
+            elif mode == "rect":
+                screen.blit(canvas_copy, (0,0))
+                x1, y1 = start_pos
+                x2, y2 = event.pos
+
+                rect = pygame.Rect(min(x1,x2), min(y1,y2),
+                                   abs(x2-x1), abs(y2-y1))
+
+                width = 0 if fill else 2
+                pygame.draw.rect(screen, color, rect, width)
+
+            elif mode == "circle":
+                screen.blit(canvas_copy, (0,0))
+                x1, y1 = start_pos
+                x2, y2 = event.pos
+
+                r = int(((x2-x1)**2 + (y2-y1)**2)**0.5)
+                width = 0 if fill else 2
+                pygame.draw.circle(screen, color, start_pos, r, width)
 
     pygame.display.flip()
     clock.tick(60)
