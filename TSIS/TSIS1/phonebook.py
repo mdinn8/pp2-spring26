@@ -141,27 +141,40 @@ def search_contacts():
     print("1.View all contacts.\n2.Search with name.\n3.Search with phone prefix.")
 
     choice = input("Enter your choice: ")
-    if choice =="1":
-        cur.execute("SELECT * FROM contacts")
+    rows = []  # ← бастапқы мән бер
+
+    if choice == "1":
+        cur.execute("""
+            SELECT c.id, c.name, c.phone, c.email, c.birthday, g.name
+            FROM contacts c
+            LEFT JOIN groups g ON c.group_id = g.id
+        """)
         rows = cur.fetchall()
     elif choice == "2":
         name = input("Please enter the name for search: ")
-        cur.execute("SELECT * FROM contacts WHERE name = %s", (name,))
-
+        cur.execute("""
+            SELECT c.id, c.name, c.phone, c.email, c.birthday, g.name
+            FROM contacts c
+            LEFT JOIN groups g ON c.group_id = g.id
+            WHERE c.name ILIKE %s
+        """, (f"%{name}%",))
         rows = cur.fetchall()
     elif choice == "3":
         prefix = input("Please enter the prefix: ")
-        cur.execute("SELECT * FROM contacts WHERE phone LIKE %s", (prefix+"%",))
-
+        cur.execute("""
+            SELECT c.id, c.name, c.phone, c.email, c.birthday, g.name
+            FROM contacts c
+            LEFT JOIN groups g ON c.group_id = g.id
+            WHERE c.phone LIKE %s
+        """, (prefix + "%",))
         rows = cur.fetchall()
-    
     else:
         print("Wrong choice!")
         return
-    
+
     if rows:
         for row in rows:
-            print(f"ID:{row[0]}, Name: {row[1]}, Phone: {row[2]},")
+            print(f"ID:{row[0]}, Name: {row[1]}, Phone: {row[2]}")
     else:
         print("Nothing found.")
 
