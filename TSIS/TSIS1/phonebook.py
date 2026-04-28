@@ -219,7 +219,7 @@ def filter_by_group():
 def search_by_email():
     emailp = input("Enter email name: ")
     cur.execute("SELECT c.id, c.name, c.phone, c.email, c.birthday, g.name FROM contacts c LEFT JOIN groups g ON c.group_id = g.id WHERE c.email LIKE %s ORDER BY c.name", (f"%{emailp}%",))
-    rows = cur.fetchall
+    rows = cur.fetchall()
     print_rows(rows)
 
 def sort_out():

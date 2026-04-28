@@ -10,31 +10,29 @@ pygame.init()
 WIDTH, HEIGHT = 600, 600
 TILE = 20
 
-# ── Colors ──────────────────────────────────────────────
 WHITE   = (255, 255, 255)
 BLACK   = (0,   0,   0)
 GREEN   = (0,   200, 0)
 RED     = (220, 0,   0)
 GRAY    = (100, 100, 100)
 GOLD    = (255, 215, 0)
-DARK_RED= (139, 0,   0)   # Poison food
-BLUE    = (30,  144, 255)  # Speed boost power-up
-CYAN    = (0,   255, 220)  # Slow motion power-up
-PURPLE  = (180, 0,   255)  # Shield power-up
+DARK_RED= (139, 0,   0)   # poison food
+BLUE    = (30,  144, 255)  # speed boost power-up
+CYAN    = (0,   255, 220)  # slow motion power-up
+PURPLE  = (180, 0,   255)  # shield power-up
 BG1     = (255, 255, 255)
 BG2     = (212, 212, 212)
-PANEL   = (20,  20,  20)
+PANEL   = (255,  255,  255)
 ACCENT  = (50,  200, 50)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Snake Game – TSIS 4")
+pygame.display.set_caption("Snake Game")
 clock = pygame.time.Clock()
 
 font_big   = pygame.font.SysFont("Arial", 38, bold=True)
 font_med   = pygame.font.SysFont("Arial", 26)
 font_small = pygame.font.SysFont("Arial", 20)
 
-# ── Helpers ──────────────────────────────────────────────
 def draw_bg(surface):
     for row in range(HEIGHT // TILE):
         for col in range(WIDTH // TILE):
@@ -72,7 +70,7 @@ def random_free(snake, walls, exclude=None):
             if exclude is None or (x, y) != exclude:
                 return (x, y)
 
-# ── Username screen ──────────────────────────────────────
+#Username screen
 def username_screen():
     username = ""
     active = True
@@ -109,7 +107,6 @@ def username_screen():
                     if len(username) < 20:
                         username += event.unicode
 
-# ── Main Menu ────────────────────────────────────────────
 def main_menu(username, personal_best):
     buttons = {
         "play":        pygame.Rect(WIDTH//2 - 110, 240, 220, 48),
@@ -127,8 +124,8 @@ def main_menu(username, personal_best):
         for key, rect in buttons.items():
             hov = rect.collidepoint(mx, my)
             bg  = ACCENT if hov else (40, 40, 40)
-            label = {"play": "▶  Play", "leaderboard": "🏆  Leaderboard",
-                     "settings": "⚙  Settings", "quit": "✕  Quit"}[key]
+            label = {"play": " Play", "leaderboard": "Leaderboard",
+                     "settings": "Settings", "quit": "Quit"}[key]
             draw_button(screen, rect, label, font_med, bg, WHITE)
 
         pygame.display.flip()
@@ -141,13 +138,12 @@ def main_menu(username, personal_best):
                     if rect.collidepoint(event.pos):
                         return key
 
-# ── Leaderboard screen ───────────────────────────────────
 def leaderboard_screen():
     rows = get_leaderboard(10)
     back_btn = pygame.Rect(WIDTH//2 - 80, 545, 160, 40)
     while True:
         screen.fill(PANEL)
-        draw_text_centered(screen, "🏆 LEADERBOARD", font_big, GOLD, 30)
+        draw_text_centered(screen, "LEADERBOARD", font_big, GOLD, 30)
 
         headers = ["#", "Player", "Score", "Level"]
         col_x   = [20, 60, 350, 490]
@@ -165,7 +161,7 @@ def leaderboard_screen():
 
         mx, my = pygame.mouse.get_pos()
         hov = back_btn.collidepoint(mx, my)
-        draw_button(screen, back_btn, "← Back", font_med, ACCENT if hov else (40,40,40), WHITE)
+        draw_button(screen, back_btn, "Back", font_med, ACCENT if hov else (40,40,40), WHITE)
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -177,7 +173,6 @@ def leaderboard_screen():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return
 
-# ── Settings screen ──────────────────────────────────────
 def settings_screen(cfg):
     colors_list = [
         ("Green",  [0, 200, 0]),
@@ -196,9 +191,8 @@ def settings_screen(cfg):
 
     while True:
         screen.fill(PANEL)
-        draw_text_centered(screen, "⚙  Settings", font_big, WHITE, 40)
+        draw_text_centered(screen, "Settings", font_big, WHITE, 40)
 
-        # Snake color
         draw_text_centered(screen, "Snake Color", font_med, GRAY, 210)
         cname, cval = colors_list[color_idx]
         pygame.draw.rect(screen, tuple(cval), (WIDTH//2 - 55, 250, 110, 36), border_radius=6)
@@ -206,14 +200,12 @@ def settings_screen(cfg):
         draw_button(screen, right_btn, "▶", font_med, (40,40,40), WHITE)
         draw_text_centered(screen, cname, font_small, WHITE, 295)
 
-        # Grid overlay toggle
         go_rect = pygame.Rect(WIDTH//2 - 60, 340, 120, 36)
         go_col  = ACCENT if cfg["grid_overlay"] else (60,60,60)
         draw_button(screen, go_rect,
                     "Grid: ON" if cfg["grid_overlay"] else "Grid: OFF",
                     font_med, go_col, WHITE)
 
-        # Sound toggle
         snd_rect = pygame.Rect(WIDTH//2 - 60, 395, 120, 36)
         snd_col  = ACCENT if cfg["sound"] else (60,60,60)
         draw_button(screen, snd_rect,
@@ -248,7 +240,6 @@ def settings_screen(cfg):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return cfg
 
-# ── Game Over screen ─────────────────────────────────────
 def game_over_screen(score, level, personal_best):
     play_btn = pygame.Rect(WIDTH//2 - 110, 330, 220, 48)
     menu_btn = pygame.Rect(WIDTH//2 - 110, 395, 220, 48)
@@ -261,10 +252,10 @@ def game_over_screen(score, level, personal_best):
         pb_color = GOLD if score >= personal_best else GRAY
         draw_text_centered(screen, f"Personal Best: {personal_best}", font_small, pb_color, 230)
         if score >= personal_best and score > 0:
-            draw_text_centered(screen, "🎉 New Record!", font_med, GOLD, 265)
+            draw_text_centered(screen, "New Record!", font_med, GOLD, 265)
 
         mx, my = pygame.mouse.get_pos()
-        for btn, label in [(play_btn, "▶  Play Again"), (menu_btn, "⌂  Main Menu"), (lb_btn, "🏆  Leaderboard")]:
+        for btn, label in [(play_btn, "Play Again"), (menu_btn, "Main Menu"), (lb_btn, "Leaderboard")]:
             hov = btn.collidepoint(mx, my)
             draw_button(screen, btn, label, font_med, ACCENT if hov else (60,0,0), WHITE)
 
@@ -281,7 +272,6 @@ def game_over_screen(score, level, personal_best):
                 if lb_btn.collidepoint(event.pos):
                     return "leaderboard"
 
-# ── Power-up logic ───────────────────────────────────────
 POWERUP_TYPES = [
     {"type": "speed_boost",  "color": BLUE,   "duration": 5000, "label": "SPEED!"},
     {"type": "slow_motion",  "color": CYAN,   "duration": 5000, "label": "SLOW"},
@@ -303,7 +293,6 @@ def spawn_powerup(snake, walls, food, disfood, poison):
                     "duration": pt["duration"],
                     "spawn_time": pygame.time.get_ticks()}
 
-# ── Main game loop ───────────────────────────────────────
 def run_game(username, player_id, cfg):
     def make_disfood(snake, walls, food_pos):
         pos = random_free(snake, walls, exclude=food_pos)
@@ -350,7 +339,6 @@ def run_game(username, player_id, cfg):
     while True:
         now = pygame.time.get_ticks()
 
-        # ── Events ──────────────────────────────────────
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit(); sys.exit()
@@ -363,46 +351,37 @@ def run_game(username, player_id, cfg):
         if game_over:
             break
 
-        # ── Disappearing food timer ──────────────────────
         if now - last_dis_change >= DISF_LIFETIME:
             disfood = make_disfood(snake, walls, food)
             last_dis_change = now
 
-        # ── Poison timer ────────────────────────────────
         if now - poison["spawn_time"] >= POISON_LIFETIME:
             poison = make_poison(snake, walls, food, disfood)
 
-        # ── Power-up spawn timer ─────────────────────────
         if powerup_obj is None and now >= powerup_next:
             powerup_obj = spawn_powerup(snake, walls, food, disfood, poison)
 
-        # ── Power-up disappear after 8 sec ───────────────
         if powerup_obj and now - powerup_obj["spawn_time"] >= 8000:
             powerup_obj = None
             powerup_next = now + random.randint(8000, 15000)
 
-        # ── Active power-up expiry ───────────────────────
         if active_powerup and active_powerup["duration"] > 0:
             if now - active_powerup["start"] >= active_powerup["duration"]:
                 active_powerup = None
                 shield_active  = False
 
-        # ── Effective speed ──────────────────────────────
         speed = base_speed
         if active_powerup:
             if active_powerup["type"] == "speed_boost": speed = base_speed + 4
             if active_powerup["type"] == "slow_motion": speed = max(2, base_speed - 3)
 
-        # ── Move snake ──────────────────────────────────
         head = (snake[0][0] + dx, snake[0][1] + dy)
 
-        # ── Collision checks ─────────────────────────────
         hit_wall   = head in walls
         hit_border = head[0] < 0 or head[0] >= WIDTH or head[1] < 0 or head[1] >= HEIGHT
         hit_self   = head in snake
 
         if shield_active and (hit_wall or hit_border):
-            # Shield: ignore wall/border once, teleport to random free spot
             head = random_free(snake, walls)
             shield_active = False
             active_powerup = None
@@ -410,9 +389,7 @@ def run_game(username, player_id, cfg):
             game_over = True
             break
 
-        # ── Poison check ─────────────────────────────────
         if head == poison["pos"]:
-            # Chomp by 2 segments, game over if too short
             snake = snake[2:] if len(snake) > 3 else snake
             if len(snake) <= 1:
                 game_over = True
@@ -420,12 +397,10 @@ def run_game(username, player_id, cfg):
             poison = make_poison(snake, walls, food, disfood)
             snake.insert(0, head)
             snake.pop()
-            # Redraw and continue
         else:
             snake.insert(0, head)
 
             grew = False
-            # ── Normal food ──────────────────────────────
             if head == food:
                 val = random.randint(1, 3)
                 score += val
@@ -436,7 +411,6 @@ def run_game(username, player_id, cfg):
                     base_speed += 1
                     walls = load_walls(level)
 
-            # ── Disappearing food ────────────────────────
             elif head == disfood["pos"]:
                 score += disfood["value"]
                 grew = True
@@ -447,7 +421,6 @@ def run_game(username, player_id, cfg):
                     base_speed += 1
                     walls = load_walls(level)
 
-            # ── Power-up ─────────────────────────────────
             elif powerup_obj and head == powerup_obj["pos"]:
                 pt = powerup_obj["type"]
                 active_powerup = {"type": pt, "duration": powerup_obj["duration"],
@@ -460,7 +433,6 @@ def run_game(username, player_id, cfg):
             if not grew:
                 snake.pop()
 
-        # ── Draw ─────────────────────────────────────────
         draw_bg(screen)
 
         if cfg.get("grid_overlay"):
@@ -469,34 +441,28 @@ def run_game(username, player_id, cfg):
             for gy in range(0, HEIGHT, TILE):
                 pygame.draw.line(screen, (180, 180, 180), (0, gy), (WIDTH, gy))
 
-        # Walls
         for w in walls:
             pygame.draw.rect(screen, GRAY, (*w, TILE, TILE))
             pygame.draw.rect(screen, (60, 60, 60), (*w, TILE, TILE), 1)
 
-        # Snake
         sc = tuple(cfg["snake_color"])
         for i, seg in enumerate(snake):
             color = tuple(min(255, c + 40) for c in sc) if i == 0 else sc
             pygame.draw.rect(screen, color, (*seg, TILE, TILE))
             pygame.draw.rect(screen, (0, 80, 0), (*seg, TILE, TILE), 1)
 
-        # Foods
         pygame.draw.rect(screen, RED,     (*food, TILE, TILE))
         pygame.draw.rect(screen, GOLD,    (*disfood["pos"], TILE, TILE))
         pygame.draw.rect(screen, DARK_RED,(*poison["pos"],  TILE, TILE))
 
-        # Power-up on field
         if powerup_obj:
             pygame.draw.rect(screen, powerup_obj["color"], (*powerup_obj["pos"], TILE, TILE))
             pygame.draw.rect(screen, WHITE, (*powerup_obj["pos"], TILE, TILE), 2)
 
-        # HUD
         pygame.draw.rect(screen, (0, 0, 0, 160), (0, 0, WIDTH, 36))
         hud = font_small.render(f"Score: {score}   Level: {level}   PB: {personal_best}   User: {username}", True, WHITE)
         screen.blit(hud, (8, 8))
 
-        # Active power-up indicator
         if active_powerup:
             ind = font_small.render(f"⚡ {active_powerup['label']}", True, GOLD)
             screen.blit(ind, (8, 575))
@@ -505,20 +471,17 @@ def run_game(username, player_id, cfg):
                 fraction = 1 - elapsed / active_powerup["duration"]
                 pygame.draw.rect(screen, GOLD,  (0, 595, int(WIDTH * fraction), 5))
 
-        # Shield indicator
         if shield_active:
-            sh = font_small.render("🛡 SHIELD ACTIVE", True, PURPLE)
+            sh = font_small.render("SHIELD ACTIVE", True, PURPLE)
             screen.blit(sh, (WIDTH - sh.get_width() - 8, 575))
 
         pygame.display.flip()
         clock.tick(speed)
 
-    # ── Game Over ────────────────────────────────────────
     personal_best = max(personal_best, score)
     save_result(player_id, score, level)
     return score, level, personal_best
 
-# ── Entry point ──────────────────────────────────────────
 def main():
     init_db()
     cfg      = load_settings()
@@ -545,7 +508,8 @@ def main():
             action = "menu"
 
         elif action == "quit":
-            pygame.quit(); sys.exit()
+            pygame.quit(); 
+            sys.exit()
 
 if __name__ == "__main__":
     main()

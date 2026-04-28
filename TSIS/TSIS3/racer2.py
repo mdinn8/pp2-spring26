@@ -90,6 +90,43 @@ def draw_text(text, font, color, x, y):
     render = font.render(text, True, color)
     screen.blit(render, (x, y))
 
+def get_player_name():
+    name = ""
+    error = ""
+    while True:
+        screen.fill(WHITE)
+        draw_text("RACER GAME", font_big, BLACK, 60, 80)
+        draw_text("Enter your name:", font_medium, BLACK, 80, 200)
+
+        # Input box
+        box = pygame.Rect(80, 250, 240, 45)
+        pygame.draw.rect(screen, GRAY, box, border_radius=6)
+        pygame.draw.rect(screen, BLACK, box, 2, border_radius=6)
+        draw_text(name, font_medium, BLACK, 90, 258)
+
+        if error:
+            draw_text(error, font_small, RED, 90, 310)
+
+        draw_text("ENTER - Continue", font_small, BLACK, 100, 550)
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    if name.strip():
+                        return name.strip()
+                    else:
+                        error = "Name cannot be empty!"
+                elif event.key == K_BACKSPACE:
+                    name = name[:-1]
+                else:
+                    if len(name) < 15:
+                        name += event.unicode
 
 def main_menu():
     while True:
@@ -202,8 +239,8 @@ repair_img = pygame.Surface((35, 35))
 repair_img.fill((0, 255, 0))
 
 
-def game_over_screen(score, distance, coins):
-    save_score("Player", score, distance, coins)
+def game_over_screen(score, distance, coins, name="Player"):
+    save_score(name, score, distance, coins)
 
     while True:
         screen.fill(RED)
@@ -328,7 +365,7 @@ def run_game():
                 active_power = None
                 obstacle_rect.center = (random.randint(40, WIDTH - 40), -200)
             else:
-                result = game_over_screen(score, distance, coins)
+                result = game_over_screen(score, distance, coins, player_name)
                 if result == "retry":
                     run_game()
                     return
@@ -340,7 +377,7 @@ def run_game():
                 pygame.mixer.music.pause()
                 crash_sound.play()
 
-            result = game_over_screen(score, distance, coins)
+            result = game_over_screen(score, distance, coins, player_name)
 
             if result == "retry":
                 run_game()
@@ -368,6 +405,7 @@ def run_game():
         pygame.display.update()
         clock.tick(FPS)
 
+player_name = get_player_name()
 
 while True:
     main_menu()

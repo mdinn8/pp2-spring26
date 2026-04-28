@@ -144,7 +144,7 @@ while running:
                     p3 = (x1 + side // 2, y1 - h)
                 else:
                     p1 = (x1, y1)
-                    p2 = (x1 + side, x1)
+                    p2 = (x1 + side, y1)
                     p3 = (x1 + side // 2, y1 + h)
             
                 width = 0 if fill else 2
